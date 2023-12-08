@@ -1,0 +1,97 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[hmargin=2cm,vmargin=2.5cm]{geometry}
+\usepackage{enumerate}
+\usepackage{makecell}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage[table]{xcolor}
+\usepackage{minted}
+\usepackage{graphicx}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[
+    backend=biber,
+    style=alphabetic,
+    sorting=none
+]{biblatex}
+
+\usepackage{biblatex}
+\usepackage{url}
+\addbibresource{Reference.bib}
+
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{comment}
+\usepackage{listings}
+
+%------------to insert python code-----------------
+\lstnewenvironment{Pythoncode}[1][]
+  {\lstset{
+    language=Python,
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    showstringspaces=false,
+    captionpos=b,
+    frame=single,
+    #1
+  }}
+  {}
+
+  
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\begin{comment}
+    \setlength{\arrayrulewidth}{0.4mm}
+    \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+    
+    \pagestyle{fancy}
+    \fancyhead[R]{\textbf{\textcolor{cyan}{SI-CRYPTOGRAPHIE}}\\
+    \textbf{\textcolor{cyan}{MAC}}}
+\end{comment}
+
+\setlength{\arrayrulewidth}{0.4mm}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\pagestyle{fancy}
+\fancyhead[R]{\textbf{\textcolor{cyan}{SI-CRYPTOGRAPHIE}}\\
+\textbf{\textcolor{cyan}{MAC}}}
+
+%-----to set the spacing for all sections and subsections in the document-------------
+\titlespacing{\section}{0pt}{\baselineskip}{\baselineskip}
+\titlespacing{\subsection}{0pt}{\baselineskip}{\baselineskip}
+
+
+\begin{document}
+\include{Sections/page}
+
+%-------------Creating the table of content------------------------
+\tableofcontents
+
+\include{Sections/Introduction}
+\include{Sections/Methode}
+\include{Sections/Utilisation}
+\include{Sections/Avantage}
+\include{Sections/Securite}
+\include{Sections/Implementation}
+\include{Sections/Conclusion}
+\include{Sections/Exercice}
+\include{Sections/Corriger}
+
+\section{\textbf{\underline{REFERENCES DU DOCUMENT}}}
+\printbibliography
+
+\end{document}
