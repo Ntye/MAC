@@ -1,0 +1,172 @@
+\section{\textbf{\underline{CORRECTION DES EXERCICES}}}
+%----------------------Exo 1-----------------------------
+\subsection{\textbf{\underline{Correction de l'exercice 1}}}\label{C_Exo 1}
+
+\begin{enumerate}
+    \item [\textbf{Q01}] La deuxième, troisième et la quatrième affirmation est erronée.\\
+
+    Les MACs (Codes d'authentification de message) sont utilisés pour garantir l'intégrité des messages, ce qui signifie qu'ils permettent de détecter toute altération ou modification des données pendant la transmission.
+    Cependant, ils ne garantissent pas la confidentialité des messages.\\
+    
+    Pour la confidentialité, on utilise généralement des techniques de chiffrement symétrique ou asymétrique. Les MACs n'offrent pas non plus de garantie de nonrépudiation.
+    Ou de garantie de chronologie des messages (affirmation iv).
+    
+    \item [\textbf{Q02}:] Les HMACs utilisent des fonctions de hachage cryptographiques pour générer des codes d'authentification des messages. Ils fournissent une garantie d'intégrité en détectant les altérations du message, et ils nécessitent une clé secrète partagée pour leur utilisation.
+    
+    \item [\textbf{Q03}:] Les CMACs (Cipher-based Message Authentication Codes) sont des algorithmes utilisés pour authentifier et garantir l'intégrité des messages. Ils utilisent des opérations de chiffrement symétrique avec une clé secrète partagée pour calculer un code d'authentification (CMAC).\\
+
+    Ce code est attaché ou transmis avec le message. Le destinataire recalculera le CMAC en utilisant la même clé secrète et vérifiera s'il correspond au CMAC reçu pour s'assurer de l'authenticité et de l'intégrité du message.
+
+    \item [\textbf{Q04}:] Bien que les HMACs soient largement utilisés et considérés comme sécurisés, ils présentent certaines limites. Voici quelques-unes d'entre elles .
+    \begin{enumerate}
+        \item Dépendance aux fonctions de hachage
+        \item Longueur du code d'authentification fixe
+        \item Clé partagée 
+        \item Prise en charge limitée des modifications
+        \item Sensibilité aux attaques par force brute
+    \end{enumerate}
+    
+    \item [\textbf{Q05}:] Les CBC-MACs (Cipher Block Chaining Message Authentication Codes) sont des algorithmes de code d'authentification de message basés sur le mode de chiffrement par bloc CBC (Cipher Block Chaining) et presentent plusieurs limites bien qu'ils soient utilises dans certains protocoles.Ces limites sont:
+    \begin{enumerate}
+        \item Longueur fixe du message
+        \item Dépendance à l'initialisation du vecteur d'initialisation (IV)
+        \item Sensibilité aux erreurs de chiffrement
+        \item Difficulté de gestion des clés
+        \item Manque de résistance aux attaques par parallélisme
+    \end{enumerate}
+    
+    \item [\textbf{Q06}:] Les MACs (Message Authentication Codes) sont conçus pour garantir l'intégrité et l'authenticité des messages, mais ils ne fournissent pas de mécanisme intrinsèque pour garantir la chronologie des messages. Toutefois, vous pouvez prendre en compte les éléments suivants pour aider à garantir la chronologie lors de l'utilisation des MACs 
+    \begin{enumerate}
+        \item Horodatage des messages
+        \item Numérotation séquentielle des messages
+        \item Utilisation de tampons d'horodatage
+        \item Protocoles de communication avec ordre strict
+    \end{enumerate}
+    
+    
+    \item [\textbf{Q07}:] Pour renforcer les CBC-MACs (Cipher Block Chaining Message Authentication Codes), vous pouvez prendre en compte les mesures suivantes.
+    \begin{enumerate}
+        \item Utilisation d'une clé de chiffrement distincte
+        \item Utilisation d'une fonction de chiffrement sécurisée
+        \item Utilisation d'un vecteur d'initialisation (IV) unique
+        \item Protection des clés
+        \item Validation de la longueur du message
+        \item Évaluation régulière des vulnérabilités
+    \end{enumerate}
+    
+    
+    \item [\textbf{Q08}:] Les HMACs (Hash-based Message Authentication Codes) offrent plusieurs avantages pour garantir l'intégrité et l'authenticité des données .
+    \begin{itemize}[label=$\cdot$]
+        \item Sécurité élevée grâce à l'utilisation de fonctions de hachage cryptographiques robustes.
+        \item Garantie de l'intégrité des données en détectant toute altération du message.
+        \item Vérification de l'authenticité des données en comparant le HMAC recalculé avec celui reçu.
+    \end{itemize}
+    
+    \item [\textbf{Q09}:] Les HMACs (Hash-based Message Authentication Codes) offrent plusieurs avantages pour assurer l'intégrité et l'authenticité des données.
+
+    \begin{enumerate}
+        \item Sécurité élevée
+        \item Protection de l'intégrité des données
+        \item Vérification de l'authenticité des données
+        \item Facilité d'implémentation
+        \item Résistance aux collisions
+        \item Flexibilité d'utilisation
+    \end{enumerate}
+    
+    \item [\textbf{Q10}:] Pour renforcer les HMACs (Hash-based Message Authentication Codes), vous pouvez prendre en compte les mesures suivantes .
+    \begin{enumerate}
+        \item Utilisation d'une fonction de hachage sécurisée
+        \item Utilisation de clés fortes
+        \item Protection des clés
+        \item Utilisation d'un salt (sel)
+        \item Validation de la longueur du message
+        \item Évaluation régulière des vulnérabilités
+    \end{enumerate}
+    
+    \item [\textbf{Q11}:] Pour les MACs (Message Authentication Codes) à chiffrement par blocs, un bon générateur pseudo-aléatoire de clés doit satisfaire plusieurs critères importants.
+    \begin{enumerate}
+        \item Uniformité de la distribution des clés
+        \item lndépendance statistique
+        \item Longueur adéquate
+        \item Prévisibilité impossible
+        \item Résistance aux attaques cryptographiques connues
+    \end{enumerate}
+    
+    \item [\textbf{Q12}:] Non, l'utilisation uniquement des MACs (Message Authentication Codes) ne permet pas de garantir la réception de tous les messages. Les MACs sont des mécanismes de vérification d'intégrité et d'authenticité des données, mais ils ne sont pas conçus pour garantir la livraison des messages.
+    
+    \item [\textbf{Q13}:] Recherches personnelles\\
+\end{enumerate}
+
+\par Pour revenir à l'\nameref{Exo 1}
+%-------------------------------------------------------
+
+%----------------------Exo 2-----------------------------
+\subsection{\textbf{\underline{Correction de l'exercice 2}}}\label{C_Exo 2}
+
+\begin{enumerate}
+    \item [\textbf{1.}] Une collision sur H fournit un MAC valide. En effet, si H(x1) = H(x2), alors H(x1$parallel$K) = h(H(x1)$parallel$K) = h(H(x2)$parallel$K) = H(x2$parallel$K).
+
+    Il est donc possible pour un attaquant de forger deux messages ayant le meme MAC.
+    On voit donc que ce MAC n’est pas sûr, car il ne garantit pas l’intégrité des messages.
+    
+    \item [\textbf{2.}] Une modification posible pour le rendre plus sur est d’utiliser la construction N-MAC qui est défini comme : –N-MAC : HK1 (HK2 (M)) . En effet, il à été montré dans le rapport que l’utilisation de deux clé secrètes rendait difficile les attaques basées sur la collision de la fonction de hachage.\\
+\end{enumerate}
+
+\par Pour revenir à l'\nameref{Exo 2}
+%-----------------------------------------------------------
+
+%----------------------Exo 3-----------------------------
+\subsection{\textbf{\underline{Correction de l'exercice 3:}}}\label{C_Exo 3}
+
+CBCMAC de « Bonjour, comment vas-tu » :
+
+011011001000001110111101001110000001111111001011011101111010100111010110001100000000101000000001011111110100101110000010010100
+
+CBCMAC de « Salut, à bientôt » : 
+
+010101001101100010110101101001110111101110000100011001111110000100010011001010000100111111000001110000010000011101111110001001
+
+CBCMAC de « Rendez-vous ce soir à 20h » :
+
+001110100001101101001001100000111110110010001010110110010111010001011110010001100110110101010011001110001010000011111011001011
+
+CBCMAC de « J’ai adoré cette sortie » :
+
+011101100001110110111100110000110111111011100101001101001011100111101100011100100110011111000100001100110001101011001010001001
+
+CBCMAC de « J’aime coder en python » :
+
+110111001011000110110011011010000100111011001001001111011001110111100000010111110000110100110110110010110111101000000000101010
+
+CBCMAC de « Je déteste le langage PHP » :
+
+011001101000010110111110011010110101110011100001001101101111000110101110101001010000001100001100010110110100101001101100001000
+
+CBCMAC de « Tu es un ange » :
+
+110101001111011010110011011101000010110010100011011111101011000100010011100011111100100010100111110011000011110100100110100111
+
+CBCMAC de « Toi \& moi on est pareils » :
+
+010001001000010110101111001010000101011111110101000101101100110011100110001010111010110100101011011010110100101000000010001100\\
+
+\par Pour revenir à l'\nameref{Exo 3}
+%------------------------------------------------------------
+
+%----------------------Exo 4-----------------------------
+\newpage
+\subsection{\textbf{\underline{Correction de l'exercice 4:}}}\label{C_Exo 4}
+
+\begin{enumerate}
+    \item Convertissez la clé secrète en une séquence de chiffres hexadécimaux : 12345678 devient 3132333435363738.
+    
+    \item Concaténez la clé secrète convertie avec le message de texte brut : 3132333435363738Hello, world!
+
+    \item Utilisez une fonction de hachage SHA256 pour calculer le haché : Le haché obtenu est le MAC généré.\\
+    En utilisant cet algorithme, vous pouvez générer un MAC pour un message donné en utilisant une clé secrète fixe. Assurez-vous de choisir une clé secrète forte et confidentielle pour garantir la sécurité du MAC généré.
+    
+    \item [Note.] Cette méthode simple est fournie uniquement à des fins d'illustration et ne doit pas être utilisée dans des applications réelles nécessitant une sécurité robuste. Dans des scénarios réels, il est recommandé d'utiliser des bibliothèques cryptographiques et des implémentations appropriées du MAC pour garantir une sécurité adéquate.\\
+\end{enumerate}
+
+\par Pour revenir à l'\nameref{Exo 4}
+%--------------------------------------------------------

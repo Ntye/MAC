@@ -1,0 +1,22 @@
+\section{\textbf{\underline{AVANTAGES DES MAC}}}
+
+Nous allons donner quelques avantages cles des MAC:
+
+\begin{enumerate}
+    \item \textbf{Intégrité des données}:les MAC garantissent l'intégrité des données échangées. En calculant un MAC pour un message, il est possible de détecter si les données ont été altérées pendant leur transmission. Si le MAC calculé ne correspond pas au MAC reçu, cela indique qu'une altération a eu lieu.
+    \item \textbf{Authentification des sources}:les MAC fournissent une authentification des sources des messages. En utilisant une clé secrète partagée pour générer le MAC, le destinataire peut vérifier que le message provient d'une source authentique. Cela protège contre les attaques d'usurpation où un attaquant tente de se faire passer pour une entité légitime.
+    \item \textbf{Simplicité et efficacité}:les MAC sont relativement simples à implémenter et à vérifier. Les algorithmes de MAC couramment utilisés, tels que HMAC (HMAC-MD5, HMAC-SHA1, HMAC-SHA256, etc.), sont largement disponibles et bien documentés. De plus, le processus de vérification du MAC est efficace et ne nécessite pas de déchiffrer le contenu du message.
+    \item \textbf{Non-répudiation (dans certains cas)}:dans certains scénarios, les MAC peuvent être utilisés pour fournir une preuve de l'origine d'un message, ce qui permet de résoudre les problèmes de non-répudiation. Si une clé secrète est associée à une entité spécifique, le MAC peut servir de preuve que cette entité a généré le message.
+    \item \textbf{Adaptabilité}:les MAC peuvent être utilisés dans une variété de scénarios et de protocoles, tels que les communications réseau, les protocoles de sécurité, l'authentification des utilisateurs et la protection des données stockées. Ils peuvent être intégrés dans des protocoles existants sans nécessiter de modifications majeures.
+    \item \textbf{Résistance aux attaques cryptographiques courantes}:les MAC sont conçus pour résister à diverses attaques cryptographiques, y compris les attaques par force brute, les attaques par collision et les attaques par choix de messages. Les algorithmes de MAC bien conçus offrent un niveau élevé de sécurité contre ces attaques.\\
+\end{enumerate}
+
+\subsection{\textbf{\underline{Référence de cette partie}}}
+\begin{center}
+    \cite{Fortinet}\\
+    \cite{bellare1996keying}\\
+    \cite{klima2018cryptology}\\
+    \cite{paar2009understanding}\\
+    \cite{stallings2017principles}\\
+    \cite{schneier1995applied}\\
+\end{center}

@@ -1,0 +1,447 @@
+\section{\textbf{\underline{IMPLEMENTATION DU MAC EN PYTHON}}}
+
+L'implémentation en python de notre thème, entre outre les MACs, concerne un type de MAC en particulier : les CBC-MACs. En effet, elle consiste en le développement d'une mini-plateforme de messagerie simple sur serveur local. En d'autres termes, notre application s'exécute uniquement à partir d'une seule machine. Notons qu'il est toutefois possibles d'en lancer plusieurs instances indépendantes depuis celle-ci. De plus, notre plateforme dispose des options fondamentales y relatives, entre autres :
+\begin{itemize}[label=$\cdot$]
+    \item Possibilité de se connecter à son compte (si bien entendu il existe déjà) : pour cela, il doit tout simplement entrer son adresse e-mail et son mot de passe, suite à quoi il lui suffit de cliquer sur 'connexion' pour se connecter. Suite à cela, une boîte de dialogue 'Connexion réussie à l'adresse ...' s'affiche et l'utilisateur peut choisir d'envoyer un message ou de consulter les messages qu'il a reçu.
+    \item Possibilité de créer un compte : ceci consiste, pour l'utilisateur, à entrer des informations personnelles comme son nom et son prénom, sa date de naissance, son numéro de téléphone, et de choisir son mot de passe (qui doit absolument être non vide). Une fois ces informations remplies, il peut cliquer sur 'générer adresse' pour voir l'adresse qui lui sera attribuée. Il peut ensuite choisir de créer un compte, ce qui le fera se 'connecter' à son compte nouvellement créé. Suite à cela, une boîte de dialogue 'Connexion réussie à l'adresse ...' s'affiche et l'utilisateur peut choisir d'envoyer un message ou de consulter les messages qu'il a reçu.
+    \item Possibilité d'envoyer un message : pour le faire, une fois connecté, l'utilisateur n'a plus qu'à choisir l'option 'Envoyer un message'. Aussitôt choisie, une nouvelle fenêtre s'affiche, précédée de la disparition de la fenêtre précédente. Cette fenêtre demande obligatoirement d'entrer l'adresse du destinataire (si on la laisse vide et qu'on clique sur 'envoyer', une boîte de dialogue signale "adresse de destinataire vide") et celle-ci doit être correcte (si on entre une adresse inexistante et qu'on clique sur 'envoyer', une boîte de dialogue signale "adresse de destinataire incorrecte"). A part l'adresse du destinataire, il est possible d'entrer un message et/ou un objet. Le message ne doit pas être vide (si il est malgré tout vide, le MAC y correspondant sera vide). Si les conditions précédentes sont réunies une boîte de dialogue 'votre message a été correctement envoyé' s'affiche).
+    \item Possibilité de consulter les messages reçus : si l'on clique sur 'consulter les messages reçus', le programme parcourt d'abord une première fois tous les messages reçus (au passage, par la boîte de dialogue 'Ce message n'est pas authentique, il ne sera pas affiché', il signale tous les messages non authentiques/intègres). Il s'arrête sur le dernier message reçu par l'utilisateur. Celui-ci a ensuite la possibilité de consulter un à un les messages qu'il a reçu en naviguant dans sa boîte de réception à l'aide de 'Previous' et de 'Next'. Ceux-ci deviennent blancs s'il n'y a plus de messages respectivement avant celui sélectionné et/ou après. Dans le cas contraire ils sont verts. Si dans la navigation, on essaie de consulter un message qui n'est pas authentique, le programme affiche une boîte de dialogue 'Ce message n'est pas authentique, il ne sera pas afiifiché' et celui-ci n'est effectivement pas affiché. Pour chaque message reçu, le programme affiche l'objet et l'adresse de l'émetteur. et si celui-ci est authentique, il affiche aussi son contenu dans une zone de texte situé en plein milieu de la page.
+\end{itemize}
+
+Il est à noter que notre programme ne permet pas d'envoyer de confirmations de lectures, ni la date d'envoi des messages. Cependant, il vérifie l'ordre des messages reçus à travers le MAC. En effet, les MACs sont générés diffèrent en fonction de la position du message dans la boîte de réception du destinataire.
+
+Lors de l'envoi, le MAC est calculé au moyen d'un algorithme de chiffrement CBC et la clé secrète qu'un couple (émetteur-destinataire) a en commun est calculée par le programme afin d'éviter qu'elle soit stockée en mémoire. Son algorithme de calcul est complexe et difficile à conjecturer. Elle varie en fonction de l'émetteur et du destinataire (en fait cette clé est différente même pour peu que l'on inverse l'émetteur et le destinataire). Le vecteur d'initialisation du CBC est basé sur un générateur pseudo aléatoire qui dépend de la position du message dans la boîte de réception du message. 
+L'intérêt du dispositif est qu'il permet de vérifier l'ordre d'arrivée des messages afin de vérifier un potentiel réenvoi d'un même message par un hacker 'lambda'.
+
+En parallèle, nous avons développé une plateforme qui permet une modification quelconque d'un message dans la boîte de réception d'un utilisateur dont l'adresse a été préalablement entrée. Ceci va nous permettre d'illustrer l'efficacité des MACs dans la vérification de l'intégrité des MACs. Aussi, pendant l'illustration, nous allons vous montrer l'intérêt du générateur pseudo-aléatoire en dupliquant (par exemple) un message et son MAC.
+
+Au terme de notre illustration, nous espérons vous avoir définitivement convaincu sur l'importance des MACs et nous souhaitons que vous serez fascinés par les MACs, fascination qui d'ailleurs nous a poussés a créer notre propre fonction de génération de clés.
+
+\newpage
+\subsection{\textbf{\underline{Key Generation Function}}}
+
+\begin{Pythoncode}[numbers=left, caption={Python Code}]
+def genPseudoAl(ke : str, i : int):
+    s = ""
+    l = TAILLE // i
+    l %= TAILLE
+    m = 1
+    while len(s) != TAILLE:
+        s += ke[l]
+        m += 1
+        l += TAILLE // m
+        l %= TAILLE
+    return s
+\end{Pythoncode}
+
+\subsection{\textbf{\underline{CBC MAC Function}}}
+
+\begin{Pythoncode}[numbers=left, caption={Python Code}]
+def CBC(st : str, ke : str, a : int):#cryptage CBC
+    ke = genPseudoAl(ke, a)
+    if len(st) % TAILLE != 0:
+        while len(st) % TAILLE != 0:
+            st = "0"+st
+    for i in range(len(st) // TAILLE):
+        x = st[TAILLE*i:TAILLE*(i+1)]
+        k = ""
+        for j in range(len(x)):
+            if x[j] == ke[j]:
+                k += "0"
+            else:
+                k += "1"
+        a += 1
+        ke = genPseudoAl(k , a)
+    if(len(st) != 0):
+        return(ke)
+    else:
+        return("")
+    pass
+\end{Pythoncode}
+\newpage
+
+\begin{Pythoncode}[numbers=left, caption={Python Code}]
+def key(senderadr : str, receiveradr : str):#générateur de clés
+    s = ""
+    senderadr = senderadr[:-12]
+    receiveradr = receiveradr[:-12]
+    if len(senderadr) > len(receiveradr):
+        for i in range(len(receiveradr)):
+            s += senderadr[i]
+            s += receiveradr[i]
+        s += senderadr[len(receiveradr):]
+    elif len(receiveradr) > len(senderadr):
+        for i in range(len(senderadr)):
+            s += senderadr[i]
+            s += receiveradr[i]
+        s += receiveradr[len(senderadr):]
+    else:
+        for i in range(len(senderadr)):
+            s += senderadr[i]
+            s += receiveradr[i]
+    k1 = ""
+    for i in s[0:]:
+        k1 += str(bin(ord(i)))[2:]
+    k = ""
+    if len(k1) < TAILLE:
+        k = k1
+        j = 0
+        i = 0
+        while len(k) < TAILLE:
+            k += k1[i]
+            j += 1
+            i += len(k1) // j
+            i %= len(k1)
+    else:
+        k = k1[:TAILLE]
+    return(k)#longeur TAILLE
+    pass
+\end{Pythoncode}
+\newpage
+
+\subsection{\textbf{\underline{Tkinter Interface}}}
+
+\begin{Pythoncode}[numbers=left, caption={Python Code}]
+def sendmessage(adr : str):#cette fonction permet d'envoyer des messages depuis l'adresse spécifiée en paramètre
+    r = Tk()
+    ad = StringVar()
+    obj = StringVar()
+    def test():
+        try:
+            if ad.get() != adr:
+                os.chdir(ad.get())
+                bt = True
+                i = 0
+                tmp = None
+                while bt:
+                    try:
+                        tmp = open(str(i)+".msg", "r")
+                        tmp.close()
+                        i = i + 1
+                    except FileNotFoundError:
+                        bt = False
+                s = mes.get("1.0", END)
+                s1 = s[0:-1]
+                tmp = open(str(i)+".msg", "w")
+                tmp.write(s1)
+                tmp.close()
+                tmp = open("sender"+str(i)+".snd", "w")
+                tmp.write(adr)
+                tmp.close()
+                tmp = open("object"+str(i)+".obj", "w")
+                tmp.write(obj.get())
+                tmp.close()
+                tmp = open("MAC"+str(i)+".mac", "w")
+                s = ""
+                for j in s1:
+                    s += str(bin(ord(j)))[2:]
+                MAC = CBC(s, key(adr, ad.get()), i + 1)
+                tmp.write(MAC)
+                tmp.close()
+                os.chdir("..")
+                r.destroy()
+                messagebox.askokcancel("Envoyé", "Votre message a été envoyé ...")
+                return
+            else:
+                messagebox.askokcancel("Erreur", "Vous ne pouvez pas vous écrire ...")
+        except OSError:
+            messagebox.askokcancel("Erreur", "Adresse de destinataire incorrecte, veuillez recommencer")
+        pass
+    r.geometry("600x500+300+10")
+    r.title("Send a Message ...")
+    r.resizable(False, False)
+    c = Canvas(r, bg="#fef1e1")
+    c.pack(expand=YES, fill=BOTH)
+    Label(c, text="Send to :", bg="#fef1e1", font=("Times New Roman", 14), fg="black").place(x=10, y=15)
+    Entry(c, textvariable=ad, font=("Times New Roman", 14), fg="black").place(x=100, y=15, width=400)
+    Label(c, text="Object :", bg="#fef1e1", font=("Times New Roman", 14), fg="black").place(x=10, y=60)
+    Entry(c, textvariable=obj, font=("Times New Roman", 14), fg="black").place(x=100, y=60, width=400)
+    mes = scrolledtext.ScrolledText(c, font=("Times New Roman", 14), fg="black")
+    mes.place(x=15, y=110, width=565, height=330)
+    ad.set("")
+    obj.set("")
+    Button(c, command=test, bg="#058747", text="Send Message", font=("Times New Roman", 14), fg="white").place(x=15, y=450)
+    r.mainloop()
+    l = logged(adr)
+    l.activate()
+    pass
+\end{Pythoncode}
+
+\newpage
+\begin{Pythoncode}[numbers=left, caption={Python Code}]
+class logged :#c'est la classe qui permet l'interaction entre 
+    root = None
+    panel = None
+    lirem = None
+    sendm = None
+    adr = None
+    read = True
+
+    def readmessages(self):
+        os.chdir(self.adr)
+        self.root.destroy()
+        view(self.adr)
+
+        pass
+
+    def sendmessages(self):
+        self.root.destroy()
+        sendmessage(self.adr)
+
+        pass
+
+    def __init__(self, adr : str) -> None:
+        self.adr = adr
+        self.root = Tk()
+
+        self.root.geometry("320x200+300+200")
+        self.root.title(adr)
+        self.root.resizable(False, False)
+
+        self.panel = Canvas(self.root, bg="#fef1e1")
+        self.panel.pack(expand=YES, fill=BOTH)
+
+        Button(self.panel, text="Write Messages", command=self.sendmessages, font=("Times New Roman", 18), bg="#058747", fg="white").place(x=70, y=40)
+        
+        Button(self.panel, text="Read Messages ", command=self.readmessages, font=("Times New Roman", 18), bg="#058747", fg="white").place(x=70, y=100)
+        
+        pass
+
+    def activate(self):
+        self.root.mainloop()
+        pass
+\end{Pythoncode}
+\newpage
+
+\begin{Pythoncode}[numbers=left, caption={Python Code}]
+#classe qui peut créer les nouveaux utilisateurs
+class newUser :
+    x = None
+    x = open("i", "r")
+    i = int(x.readline())
+    x.close()
+    i += 1
+    root = None
+    panel = None
+    noms = None
+    daten = None
+    nom = None
+    datenaiss = None
+    password = None
+    paw = None
+    tele =  None
+    tel = None
+    visible = False
+    voir = None
+    adr = None
+    log = None
+    def adresse(self):
+        x = open("i", "r")
+        self.i = int(x.readline())
+        x.close()
+        self.i += 1
+        self.adr.config(text="ADRESSE : "+self.nom.get().lower().replace(" ","")+str(self.i)+"@macmail.com")
+        pass
+    def connection(self):
+        if self.paw.get() == "" or self.paw.get().split() == []:
+            messagebox.askokcancel("Erreur", "Pas de mot de passe ...")
+        else:
+            self.adresse()
+            s = str(self.adr.__getitem__("text"))
+            s1 = ""
+            for i in range(len(s)):
+                if i < 10:
+                    pass
+                else:
+                    s1+=s[i]
+            x = open("adresses", "r")
+            s = ""
+            for i in x.readlines():
+                s += i
+            x.close()
+            x = open("adresses", "w")
+            x.write(s+s1+" "+self.paw.get()+"\n")
+            x.close()
+            self.root.destroy()
+            messagebox.askokcancel("Votre adresse", "Votre adresse est "+s1)
+            self.log = logged(s1)
+            x = open("i", "w")
+            x.write(str(self.i))
+            x.close()
+            os.mkdir(s1)
+            self.log.activate()
+        pass
+    def Voir(self):
+        #cette fonction permet de switcher entre les modes visible et non visible du champ de mot de passe
+        if self.visible == False:
+            self.password.config(show="")
+            self.voir.config(text="Hide", bg="grey", fg="#ff8e01")
+            self.visible = True
+        else:
+            self.password.config(show="*")
+            self.voir.config(text="Show",bg="white", fg="#ff8e01")
+            self.visible = False
+        pass
+    def __init__(self) -> None:
+        self.root = Tk()
+        self.nom = StringVar()
+        self.paw = StringVar()
+        self.tel = StringVar()
+        self.daten = StringVar()
+        self.root.geometry("600x450+180+50")
+        self.root.title("Nouveau Compte")
+        self.root.resizable(False, False)
+        self.panel = Canvas(self.root, bg= "#fef1e1")
+        self.panel.pack(expand=YES, fill=BOTH) 
+        Label(self.panel, text="Create a new account",font=("Georgia", 30),bg="white", fg="#ff8e01").place(x=40, y=3)
+        self.panel.create_rectangle(0, 65, 450, 450,outline="grey", width=0, fill="white")
+        self.panel.create_line(0,65,450,65, width=1, fill="grey")
+        self.panel.create_line(450,0,450,450, width=1, fill="grey")
+        self.panel.create_rectangle(0, 0, 450, 65,outline="grey", width=0, fill="white")
+        Label(self.panel, text="Name:", font=("Times New Roman", 14), fg="black", bg="white").place(x=5, y=75, height=30)
+        self.noms = Entry(self.panel, textvariable=self.nom, fg="black", bg="#fef1e1", font=("Times New Roman", 12))
+        self.noms.place(x=60, y=75, width=365, height=30)
+        Label(self.panel, text="Date of Birth:", font=("Times New Roman", 14), fg="black", bg="white").place(x=5, y=120, height=30)
+        self.datenaiss = Entry(self.panel, textvariable=self.daten, fg="black", bg="#fef1e1", font=("Times New Roman", 12))
+        self.datenaiss.place(x=110, y=120, width=315, height=30)
+        Label(self.panel, text="Phone number:", font=("Times New Roman", 14), fg="black", bg="white").place(x=5, y=165, height=30)
+        self.tele = Entry(self.panel, textvariable=self.tel, fg="black", bg="#fef1e1", font=("Times New Roman", 12))
+        self.tele.place(x=125, y=165, width=300, height=30)
+        Label(self.panel, text="Password:", font=("Times New Roman", 14), fg="black", bg="white").place(x=5, y=210, height=30)
+        self.password = Entry(self.panel, textvariable=self.paw, fg="black", bg="#fef1e1", font=("Times New Roman", 12), show="*")
+        self.password.place(x=90, y=210, width=280, height=30)
+        self.voir = Button(self.panel, text="Show",bg="white", fg="#ff8e01", command=self.Voir, font=("Times New Roman", 14))
+        self.voir.place(x=370, y=210, height=30)
+        self.adr = Label(self.panel, text="Address : ", font=("Times New Roman", 14), fg="black", bg="white")
+        self.adr.place(x=10, y=270, height=35)
+        self.adresse()
+        Button(self.panel, text="Generate Address", command=self.adresse, font=("Times New Roman", 14), bg="#058747", fg="white").place(x=300, y=315)
+        Label(self.panel, text="Remember your address", font=("Times New Roman", 11), bg="White", fg="black").place(x=20, y=310)
+        Label(self.panel, text="you'll need it to login to your account !", font=("Times New Roman", 11), bg="White", fg="black").place(x=20, y=335)
+        Button(self.panel, text="Create Account", command=self.connection, font=("Times New Roman", 14), bg="#058747", fg="white").place(x=140, y=380, height=40)
+        pass
+    def activate(self):
+        self.root.mainloop()
+        pass
+\end{Pythoncode}
+\newpage
+
+\begin{Pythoncode}[numbers=left, caption={Python Code}]
+#classe qui permet de se connecter (c'est la première classe qui est créée en mémoire)
+class connection :
+    #quelques variables utiles
+    root = None
+    panel = None
+    adresse = None
+    adr = None
+    password = None
+    paw = None
+    visible = False
+    voir = None
+    newu = None
+    log = None
+    line = None
+
+    def Voir(self):
+        #cette fonction permet de switcher entre les modes visible et non visible du champ de mot de passe
+        if self.visible == False:
+            self.password.config(show="")
+            self.voir.config(text=" Hide ", bg="grey", fg="#ff8e01")
+            self.visible = True
+        else:
+            self.password.config(show="*")
+            self.voir.config(text="Show",bg="white", fg="#ff8e01")
+            self.visible = False
+
+        pass
+
+    def connect(self):
+        #cette fonction permet d'engendrer le processus de connexion à la plateforme de messagerie
+        x = open("adresses", "r")
+        b = False
+        for i in x.readlines():
+            """ k = i """
+            s1 = ''
+            s2 = ''
+            for j in range(len(i)):
+                if i[j] != ' ':
+                    s1 += i[j]
+                else:
+                    s2 = i[j+1:-1]
+                    break
+            """ for j in range(2, len(k)):
+                k[1] += " "+k[j] """
+            if s1 == self.adr.get() and s2 == self.paw.get():
+                b = True
+                break
+
+        x.close()
+
+        if b:
+            s = self.adr.get()
+            self.root.destroy()
+            messagebox.askokcancel("Connexion", "Connexion réussie à l'adresse "+s)
+            self.log = logged(s)
+            self.log.activate()
+        else:
+            messagebox.askokcancel("Erreur", "Identifiant ou mot de passe incorrect ...")
+
+        pass
+
+    def newuser(self):
+        #cette fonction permet de lancer la classe newUser au cas où l'utilisateur le souhaite
+        self.root.destroy()
+        self.newu = newUser()
+        self.newu.activate()
+
+        pass
+
+    def __init__(self) -> None:
+        #ici on initialise l'interface graphique
+        self.root = Tk()
+        self.root.geometry("1000x600+20+30")
+        self.adr = StringVar()
+        self.paw = StringVar()
+        self.root.title("Connexion")
+        self.root.resizable(False, False)
+
+        self.panel = Canvas(self.root, bg= "#fef1e1")
+        self.panel.pack(expand=YES, fill=BOTH)
+        
+        self.panel.create_rectangle(0, 130, 750, 600,outline="grey", width=0, fill="white")
+        
+        self.panel.create_line(0,130,750,130, width=1, fill="grey")
+        self.panel.create_line(750,0,750,600, width=1, fill="grey")
+        self.panel.create_rectangle(0, 0, 750, 130,outline="grey", width=0, fill="white")
+
+        Label(self.panel, text="Sign In",font=("Georgia", 55),bg="white", fg="#ff8e01").place(x=200, y=3)
+        Label(self.panel, text="Create a new account",font=("Georgia", 10),bg="white", fg="#ff8e01").place(x=250, y=100)
+        
+        Label(self.panel, text="Address:", font=("Times New Roman", 28), fg="black", bg="white").place(x=5, y=185, height=30)
+
+        self.adresse = Entry(self.panel, textvariable=self.adr, fg="black", bg="#fef1e1", font=("Times New Roman", 28))
+        self.adresse.place(x=150, y=180, width=490, height=45)
+
+        Label(self.panel, text="Password:", font=("Times New Roman", 28), fg="black", bg="white").place(x=5, y=275, height=30)
+        
+        self.password = Entry(self.panel, textvariable=self.paw, fg="black", bg="#fef1e1", font=("Times New Roman", 28), show="*")
+        self.password.place(x=165, y=270, width=465, height=45)
+
+        self.voir = Button(self.panel, text="Show",bg="white", fg="#ff8e01", command=self.Voir, font=("Times New Roman", 28))
+        self.voir.place(x=630, y=270, height=45)
+       
+        Button(self.panel, text="Login", command=self.connect, font=("Times New Roman", 28), bg="#058747").place(x=260, y=350, height=45)
+
+        Label(self.panel, text="You don't have an account yet?",font=("Times New Roman", 20), bg="white").place(x=15, y=450)
+        Label(self.panel, text="Sign Up Now !",font=("Times New Roman", 28), bg="white").place(x=15, y=500, height=45)
+
+        
+        Button(self.panel, text="Get Started", command=self.newuser, font=("Times New Roman", 28),bg="white", fg="#ff8e01").place(x=260, y=500, height=45)
+        
+        pass
+
+    def activate(self):
+        #cette fonction permet de lancer effectivement l'application
+        self.root.mainloop()
+        pass
+\end{Pythoncode}

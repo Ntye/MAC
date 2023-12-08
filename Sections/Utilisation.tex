@@ -1,0 +1,39 @@
+\section{\textbf{\underline{UTILISATION DES MAC}}}
+
+Les messages d'authentification par code (MAC) sont largement utilisés dans divers domaines pour garantir la sécurité des communications et protéger les données sensibles. Ils offrent une protection essentielle contre les attaques d'altération et d'usurpation. Nous allons donner quelques exemples d'utilisation du MAC.
+\subsection{\textbf{\underline{SECURISATION DES COMMUNICATIONS RESEAUX}}}
+Dans cette partie nous aurons principalement deux utilisations du MAC.
+\begin{itemize}[label=$\cdot$]
+    \item \textbf{\-Protocole des securites reseaux}: les MAC sont utilisés dans des protocoles tels que IPsec pour assurer l'authentification et l'intégrité des paquets de données échangés sur un réseau. En ajoutant un MAC aux paquets, il est possible de vérifier si les données n'ont pas été modifiées en transit.
+    \item \textbf{\-Authentification des messages dans les protocoles de securite}: des protocoles de communication tels que TLS/SSL utilisent des MAC pour vérifier l'authenticité et l'intégrité des messages échangés entre les serveurs et les clients. Cela garantit que les données ne sont pas altérées et qu'elles proviennent bien de la source attendue.
+
+\end{itemize}
+
+\subsection{\textbf{\underline{PROTECTION DES DONNEES STOCKEES}}}
+
+\begin{itemize}[label=$\cdot$]
+    \item \textbf{\-Authentification des fichiers et des données sensibles} :les MAC sont utilisés pour vérifier l'intégrité des fichiers et des données stockées. En calculant le MAC d'un fichier, il est possible de s'assurer qu'il n'a pas été modifié depuis sa création ou sa dernière vérification.
+    \item \textbf{\-Vérification de l'intégrité des sauvegardes}:lors de la création de sauvegardes de données, les MAC sont souvent utilisés pour vérifier l'intégrité des sauvegardes. Cela permet de détecter toute altération ou corruption des données lors de leur restauration.
+\end{itemize}
+
+\subsection{\textbf{\underline{AUTHENTIFICATION DES UTILISATEURS}}}
+
+Le MAC permet egalement d'authentifier les differents utilisateurs sur le reseau.
+
+\begin{itemize}[label=$\cdot$]
+        \item \textbf{Mécanismes d'authentification forte}:les MAC sont utilisés dans des mécanismes d'authentification forte tels que HMAC-based One-Time Passwords (HOTP). Ces mécanismes génèrent des codes d'authentification uniques à chaque utilisation, basés sur un secret partagé et un compteur. Les MAC sont utilisés pour valider ces codes d'authentification.
+        \item \textbf{Protection des mots de passe} :les MAC sont utilisés pour protéger les mots de passe stockés dans les bases de données. Lorsqu'un utilisateur saisit un mot de passe, son MAC est calculé et comparé avec celui stocké dans la base de données. Cela permet de vérifier l'authenticité du mot de passe sans stocker le mot de passe lui-même.
+
+\end{itemize}
+\newpage
+
+\subsection{\textbf{\underline{Référence de cette partie}}}
+\begin{center}
+    \cite{cini2021updatable}\\
+    \cite{athmani2010protocole}\\
+    \cite{dierks2008transport}\\
+    \cite{mckusick2015design}\\
+    \cite{krawczyk2010cryptographic}\\
+    \cite{turner2008keyed}\\
+    \cite{vazquez2021pakemail}\\
+\end{center}
